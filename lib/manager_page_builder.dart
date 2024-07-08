@@ -20,7 +20,7 @@ class ManagerPageBuilder extends StatelessWidget {
   final FloatingActionButtonLocation? floatingActionButtonLocation;
   final PreferredSizeWidget? appBar;
   final Widget? floatingActionButton;
-  final bool isHome;
+  final EdgeInsetsGeometry? padding;
   const ManagerPageBuilder({
     super.key,
     required this.state,
@@ -41,7 +41,7 @@ class ManagerPageBuilder extends StatelessWidget {
     this.floatingActionButton,
     this.bottomNavigationBar,
     this.floatingActionButtonLocation,
-    this.isHome = false,
+    this.padding,
   });
 
   @override
@@ -58,15 +58,18 @@ class ManagerPageBuilder extends StatelessWidget {
       floatingActionButtonLocation: floatingActionButtonLocation,
       body: SafeArea(
         top: safeAreaTop,
-        child: switch (state) {
-          StateManager.done => pageDone(),
-          StateManager.loading => pageLoading(),
-          StateManager.error => pageError(error),
-          StateManager.disconnected => pageDisconnected(),
-          StateManager.initial => pageInitial(),
-          StateManager.loggedOut => pageLoggedOut(),
-          StateManager.maintenance => pageMaintenance()
-        },
+        child: Padding(
+          padding: padding ?? EdgeInsets.zero,
+          child: switch (state) {
+            StateManager.done => pageDone(),
+            StateManager.loading => pageLoading(),
+            StateManager.error => pageError(error),
+            StateManager.disconnected => pageDisconnected(),
+            StateManager.initial => pageInitial(),
+            StateManager.loggedOut => pageLoggedOut(),
+            StateManager.maintenance => pageMaintenance()
+          },
+        ),
       ),
     );
   }
