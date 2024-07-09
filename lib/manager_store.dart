@@ -6,8 +6,8 @@ import 'package:page_manager/entities/state_manager.dart';
 abstract class ManagerStore<E> extends ChangeNotifier {
   StateManager _state = StateManager.initial;
   StateManager get state => _state;
-  Exception? error;
-  final _errorEvent = ValueNotifier<Exception?>(null);
+  Object? error;
+  final _errorEvent = ValueNotifier<Object?>(null);
   final _navigationEvent = ValueNotifier<E?>(null);
 
   set state(StateManager status) {
@@ -34,17 +34,19 @@ abstract class ManagerStore<E> extends ChangeNotifier {
       final result = await call();
       state = onDone != null ? onDone() : StateManager.done;
       return result;
-    } on Exception catch (e, s) {
+    } catch (e, s) {
       log(
         e.toString(),
         error: e,
         name: 'ManagerStore',
         stackTrace: s,
       );
+
       if (showDialogError) {
         _emitMessage(e);
       }
       setError != null ? setError(e) : _handleSetError(e);
+
       if (onCatch != StateManager.error) {
         state = onCatch;
       }
@@ -55,12 +57,12 @@ abstract class ManagerStore<E> extends ChangeNotifier {
     }
   }
 
-  void _handleSetError(Exception e) {
+  void _handleSetError(Object e) {
     error = e;
     state = StateManager.error;
   }
 
-  void onErrorMessage(void Function(Exception message) listener) =>
+  void onErrorMessage(void Function(Object event) listener) =>
       _errorEvent.addListener(() => listener(_errorEvent.value!));
 
   void onNavigation(void Function(E event) listener) =>
@@ -70,7 +72,7 @@ abstract class ManagerStore<E> extends ChangeNotifier {
     _navigationEvent.value = event;
   }
 
-  void _emitMessage(Exception erro) {
+  void _emitMessage(Object erro) {
     _errorEvent.value = erro;
   }
 

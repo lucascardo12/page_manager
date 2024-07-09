@@ -9,8 +9,8 @@ class ManagerPageBuilder extends StatelessWidget {
   final Widget Function() pageLoading;
   final Widget Function() pageLoggedOut;
   final Widget Function() pageMaintenance;
-  final Widget Function(Exception? error) pageError;
-  final Exception? error;
+  final Widget Function(Object? error) pageError;
+  final Object? error;
   final bool drawerEnableOpenDragGesture;
   final bool? resizeToAvoidBottomInset;
   final Color? backgroundColor;

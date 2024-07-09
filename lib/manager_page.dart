@@ -35,7 +35,7 @@ abstract class ManagerPage<C extends ManagerStore, T extends StatefulWidget>
     setState(() {});
   }
 
-  void _listenerErroMessage(Exception e) {
+  void _listenerErroMessage(Object e) {
     if (mounted) {
       showDialog(
         context: context,
