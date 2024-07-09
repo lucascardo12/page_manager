@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 import 'package:page_manager/entities/state_manager.dart';
+import 'package:page_manager/handles/manager_handle_when_get_rethrow.dart';
 
 abstract class ManagerStore<E> extends ChangeNotifier {
   StateManager _state = StateManager.initial;
@@ -50,8 +52,10 @@ abstract class ManagerStore<E> extends ChangeNotifier {
       if (onCatch != StateManager.error) {
         state = onCatch;
       }
-      if (onWhenRethow(e)) {
-        rethrow;
+      if (GetIt.I.isRegistered<ManagerHandleWhenGetRethrow>()) {
+        if (GetIt.I<ManagerHandleWhenGetRethrow>().call(e)) {
+          rethrow;
+        }
       }
       return null;
     }
