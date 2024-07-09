@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:page_manager/handles/manager_handle_dialog_error.dart';
 import 'package:page_manager/manager_store.dart';
 
 abstract class ManagerPage<C extends ManagerStore, T extends StatefulWidget>
@@ -39,16 +40,21 @@ abstract class ManagerPage<C extends ManagerStore, T extends StatefulWidget>
     if (mounted) {
       showDialog(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Erro'),
-          content: Text(e.toString().replaceFirst('Exception:', '')),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+        builder: (BuildContext _) {
+          if (GetIt.I.isRegistered<ManagerHandleDialogError>()) {
+            return GetIt.I<ManagerHandleDialogError>().call(e, context);
+          }
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: Text(e.toString().replaceFirst('Exception:', '')),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
       );
     }
   }

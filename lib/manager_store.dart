@@ -28,7 +28,6 @@ abstract class ManagerStore<E> extends ChangeNotifier {
     StateManager Function()? onDone,
     StateManager onCatch = StateManager.error,
     void Function(Object? e)? setError,
-    required bool Function(Object? e) onWhenRethow,
     bool showDialogError = false,
   }) async {
     try {
@@ -54,10 +53,10 @@ abstract class ManagerStore<E> extends ChangeNotifier {
       }
       if (GetIt.I.isRegistered<ManagerHandleWhenGetRethrow>()) {
         if (GetIt.I<ManagerHandleWhenGetRethrow>().call(e)) {
-          rethrow;
+          return null;
         }
       }
-      return null;
+      rethrow;
     }
   }
 
