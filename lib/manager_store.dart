@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:page_manager/entities/state_manager.dart';
 import 'package:page_manager/handles/manager_handle_when_get_rethrow.dart';
+import 'package:page_manager/handles/manager_handle_when_set_error.dart';
 
 abstract class ManagerStore<E> extends ChangeNotifier {
   StateManager _state = StateManager.initial;
@@ -27,7 +28,6 @@ abstract class ManagerStore<E> extends ChangeNotifier {
     required Future<T?> Function() call,
     StateManager Function()? onDone,
     StateManager onCatch = StateManager.error,
-    void Function(Object? e)? setError,
     bool showDialogError = false,
   }) async {
     try {
@@ -46,7 +46,8 @@ abstract class ManagerStore<E> extends ChangeNotifier {
       if (showDialogError) {
         _emitMessage(e);
       }
-      setError != null ? setError(e) : _handleSetError(e);
+
+      _handleSetError(e);
 
       if (onCatch != StateManager.error) {
         state = onCatch;
@@ -62,6 +63,10 @@ abstract class ManagerStore<E> extends ChangeNotifier {
 
   void _handleSetError(Object e) {
     error = e;
+    if (GetIt.I.isRegistered<ManagerHandleWhenSetError>()) {
+      state = GetIt.I<ManagerHandleWhenSetError>().call(e);
+      return;
+    }
     state = StateManager.error;
   }
 
